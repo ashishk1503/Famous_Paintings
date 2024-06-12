@@ -1,0 +1,15 @@
+Questions
+#Identify the museums which are open on both Sunday and Monday display museum name, city?
+#Which museum is open for the longest duration a day display museum name, state and hours open and which day?
+#Are there museums without any paintings?
+#How many paintings have an asking price of more than their regular price?
+#Identify the paintings whose asking price is less than 50% of its regular price?
+#Which canva size costs the most?
+#Fetch the top 10 most famous painting?
+#Fetch the top 10 most famous painting subject?
+#Which are the top 5 most popular museum? (Popularity is defined based on most no of paintings in a museum)?
+#Who are the top 5 most popular artist? (Popularity is defined based on most no of paintings done by an artist)
+#Which country has the 5th highest no of paintings?
+#A Which are the 3 most popular and 3 least popular painting styles?
+#Which canva size costs the most?
+#Which artist has the most no of Portraits paintings outside USA?. Display artist name, no of paintings and the artist nationality?
