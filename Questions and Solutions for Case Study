@@ -1,0 +1,131 @@
+#Identify the museums which are open on both Sunday and Monday display museum name, city?
+
+select famous_paintings.museum.name, famous_paintings.museum.city
+from famous_paintings.museum
+join famous_paintings.museum_hours
+on famous_paintings.museum.museum_id = famous_paintings.museum_hours.museum_id
+where famous_paintings.museum_hours.day in ('Sunday', 'Monday');
+
+#Which museum is open for the longest duration a day display museum name, state and hours open and which day?
+
+select famous_paintings.museum.name, famous_paintings.museum.state, famous_paintings.museum_hours.day, max(timediff(famous_paintings.museum_hours.open, famous_paintings.museum_hours.close)) as time_duration_difference
+from famous_paintings.museum
+join famous_paintings.museum_hours
+on famous_paintings.museum.museum_id = famous_paintings.museum_hours.museum_id;
+
+#Are there museums without any paintings?
+
+select *
+from famous_paintings.museum
+join famous_paintings.work
+on famous_paintings.museum.museum_id = famous_paintings.work.museum_id
+where famous_paintings.work.work_id is null;
+
+#How many paintings have an asking price of more than their regular price?
+
+select work_id
+from famous_paintings.product_size
+where sale_price > regular_price;
+
+#Identify the paintings whose asking price is less than 50% of its regular price?
+
+select *
+from famous_paintings.product_size
+where sale_price < (0.5*regular_price);
+
+#Which canva size costs the most?
+
+select famous_paintings.canvas_size.label, max(famous_paintings.product_size.sale_price) as max_sales_price
+from famous_paintings.canvas_size
+join famous_paintings.product_size
+on famous_paintings.canvas_size.size_id = famous_paintings.product_size.size_id;
+
+#Fetch the top 10 most famous painting?
+
+select distinct(name) as Unique_paintings
+from famous_paintings.work
+limit 10;
+
+#Fetch the top 10 most famous painting subject?
+
+select distinct(subject) as famous_painting_subject
+from famous_paintings.subject
+join famous_paintings.work
+on famous_paintings.subject.work_id = famous_paintings.work.work_id
+limit 10;
+
+#Which are the top 5 most popular museum? (Popularity is defined based on most no of paintings in a museum)?
+
+select famous_paintings.museum.name, count(*) as no_of_paintings
+from famous_paintings.museum
+join famous_paintings.work
+on famous_paintings.museum.museum_id = famous_paintings.work.museum_id
+group by name
+order by no_of_paintings desc
+limit 5;
+
+#Who are the top 5 most popular artist? (Popularity is defined based on most no of paintings done by an artist)
+
+select famous_paintings.artist.full_name, count(*) as no_of_paintings
+from famous_paintings.artist
+join famous_paintings.work
+on famous_paintings.artist.artist_id = famous_paintings.work.artist_id
+group by famous_paintings.artist.full_name
+order by no_of_paintings desc
+limit 5;
+
+#Which country has the 5th highest no of paintings?
+
+select famous_paintings.museum.country, count(*) as no_of_paintings
+from famous_paintings.museum
+join famous_paintings.work
+on famous_paintings.museum.museum_id = famous_paintings.work.museum_id
+group by famous_paintings.museum.country
+order by no_of_paintings desc
+limit 1
+offset 4;
+
+#A Which are the 3 most popular and 3 least popular painting styles?
+
+(select style, count(*) as no_of_paintings
+from famous_paintings.work
+group by style
+order by no_of_paintings desc
+limit 3)
+union
+(select style, count(*) as no_of_paintings
+from famous_paintings.work
+group by style
+order by no_of_paintings asc
+limit 3);
+
+#Which canva size costs the most?
+
+select famous_paintings.canvas_size.size_id, max(famous_paintings.product_size.sale_price) as high_cost
+from famous_paintings.canvas_size
+join famous_paintings.product_size
+on famous_paintings.canvas_size.size_id = famous_paintings.product_size.size_id;
+
+#Which artist has the most no of Portraits paintings outside USA?. Display artist name, no of paintings and the artist nationality
+
+select famous_paintings.artist.full_name, count(*) as no_of_paintings, famous_paintings.artist.nationality
+from famous_paintings.artist
+join famous_paintings.work
+on famous_paintings.artist.artist_id = famous_paintings.work.artist_id
+where famous_paintings.artist.nationality != 'American'
+group by famous_paintings.artist.full_name
+order by no_of_paintings desc;
+
+with s as (select * from famous_paintings.subject where famous_paintings.subject.subject IN ('Portraits')),
+m as (SELECT * FROM famous_paintings.museum WHERE famous_paintings.museum.country NOt in ('USA'))
+select famous_paintings.artist.full_name, count(*) as no_of_paintings, famous_paintings.artist.nationality
+from famous_paintings.artist
+inner join famous_paintings.work
+on famous_paintings.artist.artist_id = famous_paintings.work.artist_id
+inner join  s
+on famous_paintings.work.work_id = s.work_id
+inner join  m
+on famous_paintings.work.museum_id = m.museum_id
+group by famous_paintings.artist.full_name
+order by no_of_paintings desc
+limit 1;
